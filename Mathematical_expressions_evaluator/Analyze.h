@@ -5,6 +5,8 @@
 #include <regex>
 #include <stack>
 #include <iostream>
+#include <any>
+//#include <cmath>
 
 using namespace std;
 class Analyze
@@ -29,7 +31,7 @@ public:
 	string calculate(string,string,string);
 	vector<string>tokenize(string);
 	int infix2postfix(string);
-	//void print2postfix(string);
+	
 
 	vector<string>regex_tokens(string , regex );
 };
