@@ -11,33 +11,35 @@ Analyze::~Analyze()
 
 //Verifications
 
-vector<string> Analyze::regex_tokens(string expr, regex words_regex_) {
+vector<string> Analyze::regex_tokens(string expr, regex words_regex_) { //Feature Regex and regex iterator (C++11)
 	vector<string>tokens;
 	regex words_regex = words_regex_;
 	auto words_begin = sregex_iterator(expr.begin(), expr.end(), words_regex);
 	auto words_end = sregex_iterator();
-	//Verifying if the expr has an uncompatible character
+	
 	for (sregex_iterator i = words_begin; i != words_end; ++i) {
 		tokens.push_back((*i).str());
 	}
 	return tokens;
 }
 //feature
-vector<any> reg2(string expr, regex words_regex_) {
+vector<any> reg2(string expr, regex words_regex_) {//Feature <Any> (C++17)
 	vector<any>tokens;
 	regex words_regex = words_regex_;
 	auto words_begin = sregex_iterator(expr.begin(), expr.end(), words_regex);
 	auto words_end = sregex_iterator();
-	//Verifying if the expr has an uncompatible character
+
 	for (sregex_iterator i = words_begin; i != words_end; ++i) {
 		tokens.push_back((*i).str());
 	}
 	return tokens;
 }
-//
+
 bool Analyze::hasBadChars(string expr) {
 	regex words_regex("[^0-9?(0-9*.)?0-9+\\-\\+\\\\\(\\)\\/\\[\\]\\*\\^\\%]");
-	if (regex_tokens(expr, words_regex).size() >= 1)
+	const int x = 1;
+	decltype(auto) x1 = x; // feature decltype auto (C++14)
+	if (regex_tokens(expr, words_regex).size() >= x1)
 		return 1;
 	return 0;
 
@@ -94,30 +96,30 @@ bool Analyze::hasOperator_AfterOperator(string expr) {
 		//Si no es  un digito y el siguente no es parenteiss
 		if (!isdigit(expr[i]) && expr[i + 1] != '(' && expr[i + 1] != ')' && expr[i + 1] != '[' && expr[i + 1] != ']' && expr[i + 1] != NULL) {
 			//si no es un digito y es un parentesis y el siguiente no es un parentesis
-			if (expr[i] == '(' && 
-				   expr[i + 1] != '(' 
+			if (expr[i] == '(' &&
+				expr[i + 1] != '('
 				&& expr[i + 1] != ')'
 				&& expr[i + 1] != '['
 				&& expr[i + 1] != ']'
-				|| expr[i] == '(' 
-				&& expr[i + 1] != '(' 
-				&& expr[i + 1] != ')'
-				&& expr[i + 1] != '['
-				&& expr[i + 1] != ']'
-				|| expr[i] == ')' 
-				&& expr[i + 1] != '(' 
-				&& expr[i + 1] != ')'
-				&& expr[i + 1] != '['
-				&& expr[i + 1] != ']'
-				|| expr[i] == '[' 
+				|| expr[i] == '('
 				&& expr[i + 1] != '('
-				&& expr[i + 1] != ')' 
+				&& expr[i + 1] != ')'
+				&& expr[i + 1] != '['
+				&& expr[i + 1] != ']'
+				|| expr[i] == ')'
+				&& expr[i + 1] != '('
+				&& expr[i + 1] != ')'
+				&& expr[i + 1] != '['
+				&& expr[i + 1] != ']'
+				|| expr[i] == '['
+				&& expr[i + 1] != '('
+				&& expr[i + 1] != ')'
 				&& expr[i + 1] != '['
 				&& expr[i + 1] != ']'
 				|| expr[i] == ']'
 				&& expr[i + 1] != '('
-				&& expr[i + 1] != ')' 
-				&& expr[i + 1] != '[' 
+				&& expr[i + 1] != ')'
+				&& expr[i + 1] != '['
 				&& expr[i + 1] != ']'
 				) {
 				//  el tercero no es un digito
@@ -125,7 +127,7 @@ bool Analyze::hasOperator_AfterOperator(string expr) {
 					continue;
 				}
 				else {
-				
+
 				}*/
 				continue;
 			}
@@ -135,7 +137,7 @@ bool Analyze::hasOperator_AfterOperator(string expr) {
 			else {
 				return true;
 			}
-			
+
 		}
 	}
 	return false;
@@ -234,97 +236,100 @@ int Analyze::precedence(string op) {
 	return 0;
 }
 
-constexpr int product(int x, int y)
+auto product = [](int x, int y)constexpr// Feature constexpr (C++17)
 {
 	return (x * y);
-}
+};
 
-auto sum = [](auto a, auto b) {
+auto sum = [](auto a, auto b) {//Feature Return type deduction and lambda generic expression (C++14)  Feature Auto (C++11)
 	return a + b;
 };
-//auto Pow = [](auto x, auto p) {
-//	if (p == 0) return 1;
-//	if (p == 1) return x;
-//	return x * Pow(x, p - 1);
-//};
+
 auto calc = [](auto a, auto b, auto op) {
 
 	if (op == "+")return to_string(sum(a, b));
 	if (op == "-")return to_string(a - b);
 	if (op == "%")return to_string(a % b);
-	if (op == "*")return to_string(product(a,b));
+	if (op == "*")return to_string(product(a, b));
 	if (op == "/")return to_string(a / b);
-	if (op == "^")return to_string(pow(a,b));
+	if (op == "^")return to_string((int)pow(static_cast<int>(a), static_cast<int>(b)));
 };
-//if (assert("1+1", "2", false)) { //Se espera que el resultado sea 2
-//	testsPassed++;
-//}
+
 
 string Analyze::calculate(string a_, string b_, string op) {
-	if (isInt(a_) && isInt(b_)) {
+	
+
+	if (isInt(a_) && isInt(b_)) {//Both are int
+		
 		int a = stoi(a_);
 		int b = stoi(b_);
+	
 		return calc(a, b, op);
 	}
-	else if (isFloat(a_) && isInt(b_)) {
+	else if (isFloat(a_) && isInt(b_)) {// A is float and B is int
 		float a = stof(a_);
 		int b = stoi(b_);
+
+		if (op == "^")return to_string(pow(static_cast<float>(a), b));
+		if (op == "+")return to_string(sum(a, b));
+		if (op == "-")return to_string(a - b);
+		if (op == "*")return to_string(a * b);
+		if (op == "/")return to_string(a / b);
+		
 		if (op == "%") {
 			int a = stoi(a_);
 			return to_string(a % b);
 		}
-		if (op == "+")return to_string(sum(a, b));
-		if (op == "-")return to_string(a - b);
-		//if (op == "%")return to_string(a % b);
-		if (op == "*")return to_string(a * b);
-		if (op == "/")return to_string(a / b);
-		if (op == "^")return to_string(pow(static_cast<float>(a), b));
-		
+
 	}
-	else if (isInt(a_) && isFloat(b_)) {
+	else if (isInt(a_) && isFloat(b_)) {// A is int and B is Float
 		int a = stoi(a_);
 		float b = stof(b_);
+
+		if (op == "^")return to_string(pow(static_cast<int>(a), static_cast<float>(b)));
+		if (op == "+")return to_string(apply(sum,make_tuple(a, b))); //feature Apply (C++17), make_tuple(C++11)
+		if (op == "-")return to_string(a - b);
+		if (op == "*")return to_string(a * b);
+		if (op == "/")return to_string(a / b);
+
 		if (op == "%") {
 			int b = stoi(b_);
 			return to_string(a % b);
 		}
-		if (op == "+")return to_string(std::apply(sum, std::make_tuple(a, b)));
-		if (op == "-")return to_string(a - b);
-		//if (op == "%")return to_string(a % b);
-		if (op == "*")return to_string(a * b);
-		if (op == "/")return to_string(a / b);
-		if (op == "^")return to_string(pow(static_cast<int>(a), static_cast<float>(b)));
-	
+
 	}
-	else {//los dos son float
+	else {//Both are float
 		float a = stof(a_);
 		float b = stof(b_);
+	
+		if (op == "^")return to_string(pow(static_cast<float>(a), static_cast<float>(b)));
+		if (op == "+")return to_string(sum(a, b));
+		if (op == "-")return to_string(a - b);
+		if (op == "*")return to_string(a * b);
+		if (op == "/")return to_string(a / b);
+
 		if (op == "%") {
 			int a = stoi(a_);
 			int b = stoi(b_);
 			return to_string(a % b);
 		}
-		if (op == "+")return to_string(sum(a, b));
-		if (op == "-")return to_string(a - b);
-		if (op == "*")return to_string(a * b);
-		if (op == "/")return to_string(a / b);
-		if (op == "^")return to_string(pow(static_cast<float>(a), static_cast<float>(b)));
+		
 	}
 
 	return "0";
 }
+void asserts() {
+	static_assert (2+3 == 5, "Assertion failed");
+}
 
-
-int Analyze::infix2postfix(string expr) {
-	//Verify expression
-	if (isBadWritten(expr) == true) return 0;
+string Analyze::test_infix2postfix(string expr) {
 
 	stack<string>numbers;
 	stack<string>operators;
 	//Obtain tokens from string
 	regex words_regex("[0-9]?([0-9]*[.])?[0-9]+|[\\-\\+\\\\\(\\)\\/\\*\\[\\]\\^\\%]");
 	vector<string> token_vector = regex_tokens(expr, words_regex);
-;
+
 	string ln = "";
 
 	for (auto i : token_vector)
@@ -332,7 +337,6 @@ int Analyze::infix2postfix(string expr) {
 		//If token is "("
 		if (i == "(" || i == "[") {
 			operators.push(i);
-
 		}
 		//if it's a number
 		else if (isInt(i) || isFloat(i)) {
@@ -353,11 +357,9 @@ int Analyze::infix2postfix(string expr) {
 				ln += op + ',';
 
 				numbers.push(calculate(num1, num2, op));
-
 			}
-			//Pop the ")"
+			//Pop el ")"
 			operators.pop();
-
 		}
 		//if it's an operator
 		else {
@@ -377,11 +379,7 @@ int Analyze::infix2postfix(string expr) {
 
 
 	}
-
-	// Entire expression has been parsed at this 
-	// point, apply remaining ops to remaining 
-	// values. 
-
+	//Lo que queda
 	while (!operators.empty()) {
 		string num2 = numbers.top();
 		numbers.pop();
@@ -396,25 +394,100 @@ int Analyze::infix2postfix(string expr) {
 	// Top of 'values' contains result, return it.
 	//Print to infix
 	cout << "Postfijo: ";
-	cout << ln.erase(ln.size() - 1) << endl;
+	cout << ln.erase(ln.size() - 0b1) << endl;
 	cout << "Respuesta: ";
-	if (isFloat(numbers.top())) {
-		
-		cout << stof(numbers.top());
-	}
-	else {
-		cout << stoi(numbers.top());
-	}
+	cout << numbers.top();
 
-
-	return 0;
+	return numbers.top();
 
 }
 
+void Analyze::infix2postfix(string expr) {
+	//Verify if expression meets the requirements
+	if (auto verify=isBadWritten(expr)) return; //Feature if scoped variable (C++17)
+
+	//Stacks that will hold the numbers and operators from expression
+	stack<string>numbers;
+	stack<string>operators;
+
+	//Send the number pattern to be detected and fill a vector with the tokens found
+	regex words_regex("[0-9]?([0-9]*[.])?[0-9]+|[\\-\\+\\\\\(\\)\\/\\*\\[\\]\\^\\%]");
+	vector<string> token_vector = regex_tokens(expr, words_regex);
+
+	//String that will hold the postfix expression
+	string ln = "";
+
+	for (auto i : token_vector) // Feature ranged based loops (C++11)
+	{
+		//If token is "("
+		if (i == "(" || i == "[") {
+			operators.push(i);
+		}
+		//if it's a number
+		else if (isInt(i) || isFloat(i)) {
+			numbers.push(i);
+			ln += i + ','; //Fill string 
+		}
+		//If token is ")"
+		else if (i == ")" || i == "]") {
+			while (!operators.empty()) { //loop until it reaches the open parenthesis
+				if (operators.top() == "(" || operators.top() == "[") break;
+				//Get 2 numbers out and an operator to evaluate
+				string num2 = numbers.top();
+				numbers.pop();
+				string num1 = numbers.top();
+				numbers.pop();
+				string op = operators.top();
+				operators.pop();
+				ln += op + ',';
+				//Push the evaluated expression to the stack of numbers
+				numbers.push(calculate(num1, num2, op));
+			}
+			//Since we have reached an open parenthesis, and we dont need it anymore, lets pop it from the operators stack
+			operators.pop();
+		}
+		//if it's an operator
+		else {//If the precedence of the new operator is greater or equal to the first operator from the stack
+			while (!operators.empty() && precedence(operators.top()) >= precedence(i)) {
+				//Get 2 numbers out and an operator to evaluate
+				string num2 = numbers.top();
+				numbers.pop();
+				string num1 = numbers.top();
+				numbers.pop();
+				string op = operators.top();
+				operators.pop();
+				ln += op + ',';
+				numbers.push(calculate(num1, num2, op));
+			}
+			//Just push the new operator if its precedence is lower than the top
+			operators.push(i);
+
+		}
 
 
+	}//For loop end
+	
+	//At this point the expression is completely parsed, just keep popping, evaluating and pushing until the operator stack is empty
+	while (!operators.empty()) {
+		string num2 = numbers.top();
+		numbers.pop();
+		string num1 = numbers.top();
+		numbers.pop();
+		string op = operators.top();
+		operators.pop();
+		ln += op + ',';
+		numbers.push(calculate(num1, num2, op));
+	}
+	//The numbers stack contains the result in top
 
+	//Print answer 
+	cout << "Postfijo: ";
+	//Erase the ',' ath the end of the string
+	cout << ln.erase(ln.size() - 0b1) << endl;//Feature binary literals (C++14)
+	cout << "Respuesta: ";
+	cout << numbers.top();
 
+}
 
 
 

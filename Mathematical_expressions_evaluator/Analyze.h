@@ -6,6 +6,8 @@
 #include <stack>
 #include <iostream>
 #include <any>
+#include <variant>
+
 //#include <cmath>
 
 using namespace std;
@@ -30,7 +32,10 @@ public:
 	int precedence(string);
 	string calculate(string,string,string);
 	vector<string>tokenize(string);
-	int infix2postfix(string);
+	void infix2postfix(string);
+	string test_infix2postfix(string expr);
+
+
 	
 
 	vector<string>regex_tokens(string , regex );

@@ -4,7 +4,7 @@ int main() {
 
 	Analyze A;
 	string infijo;
-
+	
 	do{
 	cout << "Ingrese la expresion infija" << endl;
 	cin >> infijo; 
